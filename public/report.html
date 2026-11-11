@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>ใบรายงานผลวิเคราะห์ใบมันสำปะหลัง | สมาร์ทกรีน Vision Ai</title>
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#065f46" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" href="/favicon.svg" />
+  <link rel="stylesheet" href="/css/report.css?v=4" />
+</head>
+<body>
+  <!-- Toolbar (not printed, not in the saved image) -->
+  <div class="toolbar no-print" role="toolbar" aria-label="เครื่องมือรายงาน">
+    <div class="tb-title"><span class="tb-dot" aria-hidden="true"></span>ใบรายงานสรุปผลวิเคราะห์ <small>(ขนาด A4)</small></div>
+    <div class="tb-btns">
+      <button type="button" class="tb-btn img" id="btnImage">🖼️ บันทึกรูปภาพ</button>
+      <button type="button" class="tb-btn pdf" id="btnPrint">🖨️ พิมพ์ / บันทึก PDF</button>
+      <button type="button" class="tb-btn copy" id="btnCopy">📋 คัดลอกสรุป LINE</button>
+      <a class="tb-btn line" href="https://lin.ee/nCmpTtw" target="_blank" rel="noopener noreferrer">💬 ปรึกษา LINE OA</a>
+      <button type="button" class="tb-btn close" id="btnClose">✕ ปิดหน้า</button>
+    </div>
+    <p class="tb-status" id="tbStatus" role="status" hidden></p>
+  </div>
+
+  <main class="sheet" id="sheet">
+    <p class="empty" id="emptyMsg">กำลังโหลดรายงาน...</p>
+  </main>
+
+  <!-- Saved image preview (long-press to save on phones) -->
+  <div class="img-modal no-print" id="imgModal" hidden>
+    <div class="im-box" role="dialog" aria-modal="true" aria-labelledby="imTitle">
+      <div class="im-head">
+        <b id="imTitle">🖼️ รูปภาพรายงาน</b>
+        <button type="button" class="im-close" id="imClose" aria-label="ปิด">✕</button>
+      </div>
+      <p class="im-hint">บนมือถือ: กดค้างที่รูปแล้วเลือก "บันทึกรูปภาพ" หรือกดปุ่มด้านล่าง</p>
+      <div class="im-preview" id="imImgs"></div>
+      <div class="im-actions">
+        <div class="im-links" id="imLinks"></div>
+        <button type="button" class="im-btn share" id="imShare" hidden>📤 แชร์รูป (LINE / อื่น ๆ)</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/vendor/html2canvas-1.4.1.min.js" defer></script>
+  <script src="/js/report.js?v=5" defer></script>
+</body>
+</html>

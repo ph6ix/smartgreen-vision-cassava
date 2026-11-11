@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>สมาร์ทกรีน Vision Ai วิเคราะห์ใบมันสำปะหลัง | ตรวจธาตุอาหาร โรคใบด่าง และแมลงมันสำปะหลัง</title>
+  <meta name="description" content="ถ่ายภาพใบมันสำปะหลัง ให้ AI ช่วยประเมินธาตุอาหาร โรคใบด่าง โรค และแมลง พร้อมแผนการใส่ปุ๋ย" />
+  <meta name="theme-color" content="#065f46" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" href="/favicon.svg" />
+  <link rel="stylesheet" href="/css/style.css?v=8" />
+</head>
+<body>
+  <!-- Launch splash (same idea as the sugarcane app). Tap anywhere to skip. -->
+  <div id="appSplash" class="app-splash" role="status" aria-label="กำลังโหลด สมาร์ทกรีน วิเคราะห์ใบมันสำปะหลัง">
+    <div class="splash-frame">
+      <div class="splash-bg" aria-hidden="true"></div>
+      <div class="splash-cam" aria-hidden="true">
+        <span class="splash-ring"></span><span class="splash-ring r2"></span>
+        <svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3.5"/></svg>
+        <span class="splash-corner tl"></span><span class="splash-corner tr"></span><span class="splash-corner bl"></span><span class="splash-corner br"></span>
+      </div>
+      <div class="splash-glow" aria-hidden="true"></div>
+      <img src="/assets/logo.png" alt="SMART GREEN" class="splash-logo" />
+      <div class="splash-brand">
+        <h1 class="splash-title">วิเคราะห์ใบมันสำปะหลัง</h1>
+        <div class="splash-pillars">
+          <div class="splash-pillar"><span class="splash-pi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span>ยั่งยืน</div>
+          <span class="splash-sep"></span>
+          <div class="splash-pillar"><span class="splash-pi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>แม่นยำ</div>
+          <span class="splash-sep"></span>
+          <div class="splash-pillar"><span class="splash-pi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span>นวัตกรรม</div>
+        </div>
+        <p class="splash-slogan">พัฒนาเกษตรด้วยนวัตกรรมเพื่อเกษตรกรยั่งยืน</p>
+      </div>
+      <div class="splash-load">
+        <div class="splash-track"><div class="splash-fill" id="splashFill"><span class="splash-flare"></span></div></div>
+        <div class="splash-text">Loading...</div>
+      </div>
+    </div>
+  </div>
+  <div class="app">
+    <!-- Back to the Smart Green crop picker -->
+    <a class="home-link" href="https://smartgreen-vision-ai-home.vercel.app"><span aria-hidden="true">←</span> เลือกพืชอื่น</a>
+    <!-- ===================== HEADER ===================== -->
+    <header class="app-header">
+      <div class="app-brand">
+        <div class="app-logo"><img src="/assets/logo.png" alt="SMART GREEN" /></div>
+        <div>
+          <div class="app-title">สมาร์ทกรีน VISION AI</div>
+          <div class="app-sub">วิเคราะห์ใบมันสำปะหลัง</div>
+        </div>
+      </div>
+      <button type="button" class="btn-history" data-go="history" aria-label="ดูประวัติการตรวจ">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M8 7h6"/><path d="M8 11h8"/><path d="M8 15h5"/></svg>
+        <span>ประวัติ</span>
+      </button>
+    </header>
+
+    <!-- ===================== STEPPER ===================== -->
+    <nav class="stepper" id="stepper" aria-label="ขั้นตอนการตรวจ">
+      <span class="step" data-step="1"><b>1</b><span>ข้อมูลแปลง</span></span>
+      <span class="step-line"></span>
+      <span class="step" data-step="2"><b>2</b><span>ถ่ายภาพใบ</span></span>
+      <span class="step-line"></span>
+      <span class="step" data-step="3"><b>3</b><span>ผลวิเคราะห์</span></span>
+    </nav>
+
+    <main>
+      <form id="cassavaForm" novalidate>
+        <!-- ===================== SCREEN 1: FIELD INFO ===================== -->
+        <section class="screen card" id="screen1">
+          <span class="step-badge">ขั้นตอนที่ 1 จาก 2</span>
+          <h1 class="screen-title">📋 ข้อมูลแปลงมันสำปะหลังสำหรับวิเคราะห์</h1>
+          <p class="screen-desc">กรอกข้อมูลประจำแปลงเพื่อช่วยให้ AI ประเมินอายุ สภาพแปลง และความต้องการธาตุอาหารได้แม่นยำ</p>
+
+          <label class="field">ชื่อเกษตรกร / แปลงมัน <span class="req">*</span>
+            <input name="customerName" type="text" placeholder="เช่น คุณสมชาย แปลงที่ 1" required />
+          </label>
+          <label class="field">👨‍🌾 ชื่อผู้ตรวจ / ผู้ดูแล
+            <input name="inspectorName" type="text" placeholder="เช่น คุณสมศักดิ์ หรือ ทีมนักวิชาการ" />
+          </label>
+
+          <label class="field">📅 อายุมันสำปะหลัง (เดือน) <span class="req">*</span>
+            <select name="plantAge" required>
+              <option value="">-- เลือกอายุ (เดือน) --</option>
+            </select>
+          </label>
+          <div class="quick" data-quick="plantAge"><span>ด่วน:</span></div>
+
+          <label class="field">🍠 พันธุ์มันสำปะหลัง
+            <select name="variety">
+              <option value="">-- เลือกพันธุ์ --</option>
+            </select>
+          </label>
+          <div class="quick" data-quick="variety"><span>ด่วน:</span></div>
+
+          <label class="field">จังหวัด / พื้นที่ตั้งแปลง
+            <input name="province" type="text" placeholder="เช่น นครราชสีมา, กำแพงเพชร, ชลบุรี" />
+          </label>
+
+          <label class="field">📍 พิกัดแปลง (GPS)
+            <small>(ไม่บังคับ - แตะดึงพิกัดหรือพิมพ์เอง)</small>
+            <span class="inline">
+              <input name="coordinates" type="text" placeholder="เช่น 8.938500, 98.531200" />
+              <button type="button" class="btn-soft" id="gpsBtn">🛰️ ดึงพิกัด</button>
+            </span>
+          </label>
+          <a class="maps-link" id="mapsLink" href="#" target="_blank" rel="noopener" hidden>เปิด Google Maps ปักหมุด ↗</a>
+
+          <div class="extra-box">
+            <div class="extra-head">🌱 ข้อมูลสภาพแปลงเพิ่มเติม <small>(ช่วยให้ผลแม่นยำยิ่งขึ้น · แตะเลือกได้เลย)</small></div>
+            <div class="pill-group" data-name="plantingSeason" data-label="🗓️ ฤดูปลูก:"></div>
+            <div class="pill-group" data-name="waterStatus" data-label="💧 สภาพน้ำและความชื้นในดิน:"></div>
+            <div class="pill-group" data-name="soilType" data-label="🟫 ชนิดดินในแปลง:"></div>
+            <div class="pill-group" data-name="soilPh" data-label="🧪 ค่า pH ดิน:"></div>
+            <div class="two-col">
+              <label class="field">ผลผลิตหัวสดรอบก่อน (ตัน/ไร่)
+                <input name="yieldPerRai" type="number" min="0" max="20" step="0.1" inputmode="decimal" placeholder="เช่น 3.5" />
+              </label>
+              <label class="field">ปุ๋ยที่ใส่ล่าสุด
+                <input name="lastFertilizer" type="text" placeholder="เช่น 15-7-18 50 กก./ไร่" />
+              </label>
+            </div>
+            <fieldset class="chips">
+              <legend>👀 อาการที่เห็นในแปลง (เลือกได้หลายข้อ)</legend>
+              <div id="symptomChips"></div>
+            </fieldset>
+            <label class="field">หมายเหตุเพิ่มเติม
+              <textarea name="notes" rows="2" placeholder="เช่น ใช้ท่อนพันธุ์จากแปลงเพื่อนบ้าน, เป็นหย่อม ๆ ในแปลง, เริ่มเป็นหลังฝนทิ้งช่วง"></textarea>
+            </label>
+          </div>
+
+          <p class="form-error" id="error1" role="alert" hidden></p>
+          <div class="demo-row">
+            <button type="button" class="btn-demo" id="fillDemoBtn">💡 ใส่ข้อมูลตัวอย่างทดสอบ</button>
+          </div>
+          <button type="button" class="btn-primary" id="toStep2">ถัดไป: ถ่ายภาพใบ 3 ตำแหน่ง <span aria-hidden="true">➔</span></button>
+        </section>
+
+        <!-- ===================== SCREEN 2: PHOTOS ===================== -->
+        <section class="screen card" id="screen2" hidden>
+          <span class="step-badge">ขั้นตอนที่ 2 จาก 2</span>
+          <h1 class="screen-title">📸 ถ่าย / เลือกภาพใบมันสำปะหลัง 3 ตำแหน่ง</h1>
+          <p class="screen-desc">แตะที่การ์ดเพื่อเปิดกล้องมือถือถ่ายภาพจริง หรือเลือกรูปที่มีในเครื่อง</p>
+
+          <div class="zone-guide">
+            <div class="zone-head">🎯 ตำแหน่งใบที่ต้องถ่าย</div>
+            <ul class="zone-tips">
+              <li>ใบมาตรฐานคือใบแรกที่คลี่เต็มที่นับจากยอดลงมา (ประมาณใบที่ 4-6) เก็บดีที่สุดช่วงมันอายุ 3-4 เดือน</li>
+              <li>ถ่ายให้เห็นใบทั้งใบครบทุกแฉก ทั้งด้านบนและจุดที่มีอาการ</li>
+              <li>ถ้ายอดหงิกหรือใบด่าง ให้ถ่ายยอดใกล้ ๆ ให้เห็นลายด่างและปุยแป้งชัดเจน</li>
+              <li>ภาพทั้งต้นไม่บังคับ แต่ช่วยดูทรงต้น เพลี้ยแป้ง และโคนต้นเน่า</li>
+            </ul>
+          </div>
+
+          <div id="leafCards"></div>
+
+          <div class="demo-row" id="demoBox" hidden>
+            <button type="button" class="btn-demo" id="demoBtn">💡 โหลดรูปตัวอย่างทดสอบ</button>
+          </div>
+
+          <p class="form-error" id="error2" role="alert" hidden></p>
+          <div class="btn-row">
+            <button type="button" class="btn-ghost" id="backTo1">← แก้ข้อมูลแปลง</button>
+            <button type="submit" class="btn-primary" id="submitBtn">🔍 เริ่มวิเคราะห์ด้วย AI</button>
+          </div>
+        </section>
+      </form>
+
+      <!-- ===================== SCREEN 3: ANALYZING ===================== -->
+      <section class="screen card" id="screenAnalyzing" hidden>
+        <div class="az-hero">
+          <span class="az-tag">SMARTGREEN VISION AI</span>
+          <h1>กำลังประมวลผล<br />วิเคราะห์ใบมันสำปะหลังด้วย AI</h1>
+          <p>สแกนใบมันสำปะหลังเพื่อประเมินธาตุอาหาร โรค และแมลงศัตรู</p>
+        </div>
+        <div class="az-thumbs" id="azThumbs"></div>
+        <div class="az-progress">
+          <div class="az-row"><span class="az-spin" aria-hidden="true"></span><b id="azStep">กำลังส่งภาพให้ AI...</b><b class="az-pct" id="azPct">0%</b></div>
+          <div class="az-bar"><span id="azBar"></span></div>
+          <small>ใช้เวลาประมาณ 20-40 วินาที กรุณาอย่าปิดหน้านี้</small>
+        </div>
+      </section>
+
+      <!-- ===================== SCREEN 4: RESULTS ===================== -->
+      <section class="screen card" id="screenResults" hidden>
+        <div class="res-top no-print">
+          <button type="button" class="btn-link" id="newBtnTop">← ตรวจแปลงใหม่</button>
+          <span class="done-pill">ผลตรวจสมบูรณ์ ✅</span>
+        </div>
+        <div id="resultContent"></div>
+
+        <div class="contact-card">
+          <span class="contact-badge">🌿 ศูนย์บริการสมาร์ทกรีน</span>
+          <span class="contact-sub">ปรึกษาปัญหาแปลงมัน / สั่งซื้อผลิตภัณฑ์</span>
+          <a href="tel:0852787110" class="phone-btn">
+            <span class="phone-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+            <span><span class="phone-title">ศูนย์สมาร์ทกรีน</span><span class="phone-num">085-2787110</span></span>
+          </a>
+          <div class="social-row">
+            <a href="https://lin.ee/nCmpTtw" target="_blank" rel="noopener noreferrer" class="social line"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M24 10.304c0-5.369-5.383-9.738-12-9.738-6.616 0-12 4.369-12 9.738 0 4.814 4.269 8.846 10.019 9.608.391.084.922.258 1.057.592.121.303.079.778.039 1.085l-.171 1.027c-.053.303-.242 1.186 1.039.647 1.281-.54 6.911-4.069 9.428-6.967 1.739-1.907 2.589-3.843 2.589-5.992z"/></svg>LINE สมาร์ทกรีน</a>
+            <a href="https://www.facebook.com/Smartgreenfarming/" target="_blank" rel="noopener noreferrer" class="social fb"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>Facebook สมาร์ทกรีน</a>
+            <a href="https://www.tiktok.com/@smartgreen.farming" target="_blank" rel="noopener noreferrer" class="social tt"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.97-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.24 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>TikTok สมาร์ทกรีน</a>
+          </div>
+        </div>
+
+        <p class="save-status no-print" id="saveStatus" role="status" hidden></p>
+        <div class="res-actions no-print">
+          <button type="button" class="btn-line" id="lineBtn">📋 คัดลอกผลตรวจ (ส่งเข้าแชท LINE)</button>
+          <div class="btn-grid">
+            <button type="button" class="btn-tile" id="printBtn">🖨️ พิมพ์ / บันทึกรายงานสรุป</button>
+            <button type="button" class="btn-tile" id="saveBtn">💾 บันทึกลง Google Sheets</button>
+            <button type="button" class="btn-tile" id="newBtn">🔄 เริ่มตรวจแปลงใหม่</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== HISTORY ===================== -->
+      <section class="screen card" id="screenHistory" hidden>
+        <h1 class="screen-title">📋 ประวัติการตรวจแปลง</h1>
+        <p class="screen-desc">เก็บไว้ในเครื่องนี้ล่าสุด 15 รายการ แตะเพื่อเปิดผลตรวจ</p>
+        <ul class="history" id="historyList"></ul>
+        <p class="empty" id="historyEmpty">ยังไม่มีประวัติการตรวจ</p>
+      </section>
+
+      <p class="disclaimer">
+        ⚠️ ผลวิเคราะห์จาก AI เป็นการประเมินเบื้องต้นจากภาพถ่าย ควรยืนยันด้วยการเก็บใบมาตรฐานและดินส่งวิเคราะห์ในห้องปฏิบัติการ ก่อนปรับแผนปุ๋ยจำนวนมาก
+      </p>
+      <p class="credits">ภาพตัวอย่างจาก <a href="https://www.inaturalist.org/" target="_blank" rel="noopener">iNaturalist</a> (ภาพ CC0 สาธารณสมบัติ) —
+        <a href="/assets/samples/CREDITS.md" target="_blank" rel="noopener">รายละเอียด</a></p>
+    </main>
+
+    <!-- ===================== BOTTOM NAV ===================== -->
+    <nav class="bottom-nav no-print" aria-label="แถบเมนูหลัก">
+      <button type="button" class="bn-item" data-go="home"><span class="bn-icon">🏠</span><span>หน้าแรก</span></button>
+      <button type="button" class="bn-item bn-center" data-go="scan"><span class="bn-bubble">📸</span><span>ตรวจใบมัน</span></button>
+      <button type="button" class="bn-item" data-go="history"><span class="bn-icon">📋</span><span>ประวัติแปลง</span></button>
+    </nav>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" hidden>
+    <button type="button" class="lb-close" aria-label="ปิด">×</button>
+    <img id="lightboxImg" src="" alt="" />
+  </div>
+
+  <script src="/js/app.js?v=9"></script>
+</body>
+</html>

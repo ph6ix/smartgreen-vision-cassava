@@ -669,6 +669,7 @@
   // ---------------------------------------------------------------- Google Sheets
   function buildSheetEntry(r) {
     return {
+      crop: 'cassava',
       timestamp: r.analyzedAt || new Date().toISOString(),
       traceId: r.traceId || '',
       isDemo: r.isDemo ? 'true' : '',

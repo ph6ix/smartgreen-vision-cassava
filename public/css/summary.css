@@ -1,0 +1,114 @@
+/* History page (ประวัติสะสม) — same layout as the sugarcane app's summary page */
+.sum-page { max-width: 1400px; margin: 0 auto; padding: calc(env(safe-area-inset-top) + 20px) 16px 120px; }
+.sum-hero {
+  background: linear-gradient(135deg, #065f46 0%, #047857 50%, #0284c7 100%);
+  border-radius: var(--radius); padding: 26px 30px; color: #fff; margin-bottom: 20px;
+  box-shadow: 0 18px 40px rgba(6, 95, 70, .22);
+}
+.sum-hero-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+.sum-tag { display: inline-block; padding: 7px 16px; border-radius: 999px; background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.35); font-weight: 700; font-size: .85rem; }
+.sum-back { background: #fff; color: var(--g900); text-decoration: none; font-weight: 700; font-size: .85rem; padding: 9px 16px; border-radius: 14px; }
+.sum-hero h1 { font-size: 1.75rem; font-weight: 800; margin: 16px 0 6px; line-height: 1.3; }
+.sum-hero p { margin: 0; font-size: .9rem; opacity: .95; }
+
+.sum-card { background: rgba(255,255,255,.92); border-radius: var(--radius); padding: 26px; box-shadow: 0 10px 30px rgba(15,23,42,.06); }
+.sum-toolbar { display: flex; gap: 12px; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 18px; }
+.sum-search { flex: 1; min-width: 260px; position: relative; display: block; }
+.sum-search span { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); }
+.sum-search input {
+  width: 100%; min-height: 48px; border: 1.5px solid var(--s200); border-radius: 14px; padding: 10px 14px 10px 42px;
+  font: inherit; font-size: .92rem; background: #fff; outline: none;
+}
+.sum-search input:focus { border-color: var(--g500); box-shadow: 0 0 0 3px rgba(16,185,129,.16); }
+.sum-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.sum-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 46px; padding: 8px 18px;
+  border-radius: 14px; border: 1.5px solid var(--s200); background: #fff; color: var(--s900);
+  font: 700 .88rem 'Prompt', sans-serif; cursor: pointer; text-decoration: none; white-space: nowrap;
+}
+.sum-btn:hover { border-color: var(--g500); }
+.sum-btn.primary { background: linear-gradient(135deg, var(--g600), var(--b600)); color: #fff; border-color: transparent; box-shadow: 0 8px 18px rgba(5,150,105,.25); }
+.sum-btn.danger { color: #e11d48; border-color: #fecdd3; }
+.sum-btn.danger:hover { background: #fff1f2; border-color: #e11d48; }
+.sum-btn.sm { min-height: 36px; padding: 6px 12px; font-size: .8rem; border-radius: 12px; }
+.sum-btn.del { background: #fff1f2; color: #e11d48; border-color: #fecdd3; }
+.sum-btn.del:hover { background: #e11d48; color: #fff; border-color: #e11d48; }
+.sum-meta { font-weight: 700; color: var(--s700); font-size: .9rem; margin-bottom: 14px; }
+
+.sum-table-wrap { border: 1.5px solid var(--s200); border-radius: 18px; overflow-x: auto; background: #fff; }
+.sum-table { width: 100%; border-collapse: collapse; min-width: 1050px; }
+.sum-table th, .sum-table td { text-align: left; padding: 14px 16px; border-bottom: 1px solid var(--s100); vertical-align: top; font-size: .85rem; line-height: 1.7; }
+.sum-table th { background: #f8fafc; font-weight: 800; color: #1e293b; }
+.sum-table tbody tr:last-child td { border-bottom: none; }
+.sum-table tbody tr:hover td { background: var(--g50); }
+.sum-table .c { text-align: center; }
+.sum-table .nowrap { white-space: nowrap; }
+.sum-table .diag { min-width: 300px; }
+.sum-table .actions { white-space: nowrap; text-align: center; }
+.sum-table .actions .sum-btn + .sum-btn { margin-left: 6px; }
+.sum-name { font-weight: 700; }
+.sum-name a { color: inherit; text-decoration: none; }
+.sum-name a:hover { color: var(--g700); text-decoration: underline; }
+.sum-inspector { font-size: .74rem; color: var(--g700); margin-top: 2px; }
+.sum-thumb { width: 48px; height: 48px; border-radius: 10px; object-fit: cover; float: left; margin: 2px 10px 0 0; }
+.pill { display: inline-block; line-height: 1.4; padding: 4px 10px; border-radius: 999px; font-size: .74rem; font-weight: 700; background: #ecfeff; color: #0369a1; border: 1px solid #bae6fd; white-space: nowrap; }
+.pill.h0, .pill.h1 { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
+.pill.h2 { background: var(--a50); color: var(--a700); border-color: #fde68a; }
+.pill.h3, .pill.h4 { background: var(--g50); color: var(--g700); border-color: var(--g200); }
+.demo { font-size: .7rem; color: var(--s600); font-weight: 600; }
+
+.sum-cards { display: none; flex-direction: column; gap: 12px; }
+.sum-mcard { background: #fff; border: 1.5px solid var(--s200); border-radius: 18px; padding: 16px; }
+.sum-mcard-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
+.sum-mcard-head .left { display: flex; gap: 10px; align-items: center; min-width: 0; }
+.sum-mcard-head .sum-thumb { float: none; margin: 0; flex-shrink: 0; }
+.sum-mcard-head strong { font-size: 1rem; display: block; }
+.sum-mcard-meta { font-size: .78rem; color: var(--s600); margin-bottom: 8px; }
+.sum-mcard-meta a { color: var(--g600); font-weight: 700; }
+.sum-mcard-issue { background: var(--g50); border-left: 4px solid var(--g600); padding: 8px 12px; border-radius: 8px; font-size: .85rem; color: var(--g900); margin-bottom: 8px; }
+.sum-mcard-summary { font-size: .82rem; color: var(--s700); line-height: 1.7; }
+.sum-mcard-actions { display: flex; gap: 8px; margin-top: 12px; }
+.sum-mcard-actions .sum-btn { flex: 1; }
+
+.sum-empty { text-align: center; padding: 40px 15px; color: var(--s600); }
+.sum-empty .big { font-size: 2.2rem; display: block; margin-bottom: 8px; }
+.sum-empty strong { color: #1e293b; }
+.sum-empty p { font-size: .85rem; margin: 8px 0 16px; }
+
+.sum-toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(120px); opacity: 0;
+  background: #0f172a; color: #f8fafc; padding: 12px 22px; border-radius: 999px; font-weight: 700; font-size: .85rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,.28); z-index: 9999; transition: all .3s cubic-bezier(.16,1,.3,1); pointer-events: none;
+}
+.sum-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+a.bn-item { text-decoration: none; }
+
+@media (min-width: 769px) {
+  .bottom-nav { display: none; }
+  .sum-page { padding-bottom: 48px; }
+}
+@media (max-width: 768px) {
+  .sum-table-wrap { display: none; }
+  .sum-cards { display: flex; }
+  .sum-hero { padding: 22px 20px; }
+  .sum-hero h1 { font-size: 1.45rem; }
+  .sum-card { padding: 16px; }
+  .sum-search { min-width: 0; flex-basis: 100%; }
+  .sum-actions { width: 100%; }
+  .sum-actions .sum-btn { flex: 1; padding: 8px 10px; font-size: .8rem; }
+  .sum-toast { bottom: 96px; width: 88%; max-width: 360px; text-align: center; }
+}
+
+@media print {
+  body { background: #fff; }
+  .sum-page { max-width: none; padding: 0; }
+  .sum-hero { box-shadow: none; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .sum-back, .sum-toolbar, .bottom-nav, .sum-table .actions, .sum-table th:last-child, .sum-toast { display: none !important; }
+  .sum-card { box-shadow: none; padding: 0; }
+  .sum-table-wrap { display: block !important; overflow: visible; border: none; }
+  .sum-cards { display: none !important; }
+  .sum-table { min-width: 0; }
+  .sum-table th, .sum-table td { padding: 8px; font-size: 11px; }
+  .sum-table tr { break-inside: avoid; }
+}

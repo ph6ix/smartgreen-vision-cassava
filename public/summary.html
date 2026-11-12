@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>ประวัติการตรวจแปลงมันสำปะหลัง | สมาร์ทกรีน Vision Ai</title>
+  <meta name="theme-color" content="#065f46" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" href="/favicon.svg" />
+  <link rel="stylesheet" href="/css/style.css?v=9" />
+  <link rel="stylesheet" href="/css/summary.css?v=1" />
+</head>
+<body>
+  <div class="sum-page">
+    <header class="sum-hero">
+      <div class="sum-hero-top">
+        <span class="sum-tag">🍠 SMARTGREEN AI • ประวัติสะสม</span>
+        <a href="/" class="sum-back">← กลับหน้าตรวจใบมันสำปะหลัง</a>
+      </div>
+      <h1>ประวัติการตรวจแปลงมันสำปะหลังของคุณ</h1>
+      <p>🔒 บันทึกเฉพาะในอุปกรณ์นี้ ปลอดภัย ไม่เปิดเผยต่อผู้อื่น (ระบบจัดเก็บข้อมูลย้อนหลัง 30 วันอัตโนมัติ หรือสามารถกดลบเองได้ตลอดเวลา)</p>
+    </header>
+
+    <main class="sum-card">
+      <div class="sum-toolbar">
+        <label class="sum-search">
+          <span aria-hidden="true">🔎</span>
+          <input type="search" id="searchInput" placeholder="ค้นหาชื่อลูกค้า, จังหวัด, พันธุ์, หรือผลการวิเคราะห์..." autocomplete="off" />
+        </label>
+        <div class="sum-actions">
+          <button type="button" class="sum-btn" id="refreshBtn">↻ รีเฟรช</button>
+          <button type="button" class="sum-btn primary" id="printBtn">🖨️ พิมพ์ / บันทึก PDF</button>
+          <button type="button" class="sum-btn danger" id="clearBtn">🗑️ ล้างทั้งหมด</button>
+        </div>
+      </div>
+
+      <div class="sum-meta" id="summaryMeta">กำลังโหลดข้อมูล...</div>
+
+      <div class="sum-table-wrap">
+        <table class="sum-table">
+          <thead>
+            <tr>
+              <th>วันที่ตรวจ</th>
+              <th>ชื่อลูกค้า / แปลง</th>
+              <th>อายุ</th>
+              <th>พันธุ์</th>
+              <th>จังหวัด</th>
+              <th>สุขภาพ</th>
+              <th>ผลการวินิจฉัยและคำแนะนำ</th>
+              <th class="c">จัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="sum-cards" id="cardsContainer"></div>
+
+      <div class="sum-empty" id="emptyBox" hidden>
+        <span class="big">📋</span>
+        <strong>ยังไม่มีประวัติการตรวจแปลงในอุปกรณ์นี้</strong>
+        <p>ข้อมูลการตรวจจะถูกบันทึกไว้ในเครื่องของคุณโดยอัตโนมัติเมื่อวิเคราะห์ใบมันสำปะหลัง</p>
+        <a href="/" class="sum-btn primary">🌱 เริ่มตรวจแปลงมันสำปะหลัง</a>
+      </div>
+    </main>
+  </div>
+
+  <nav class="bottom-nav no-print" aria-label="แถบเมนูหลัก">
+    <a class="bn-item" href="https://smartgreen-vision-ai-home.vercel.app"><span class="bn-icon">🏠</span><span>หน้าแรก</span></a>
+    <a class="bn-item bn-center" href="/"><span class="bn-bubble">📸</span><span>ตรวจใบมัน</span></a>
+    <a class="bn-item active" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;"><span class="bn-icon">📋</span><span>ประวัติแปลง</span></a>
+  </nav>
+
+  <div class="sum-toast" id="toast" role="status"></div>
+
+  <script>
+    window.SUMMARY_CONFIG = {
+      historyKey: 'cassavaLeafDoctor.history.v1',
+      reportKey: 'cassavaLeafDoctor.report.v1',
+      ageField: 'plantAge',
+      ageUnit: 'เดือน',
+      thumbKey: 'mature',
+      emoji: '🍠'
+    };
+  </script>
+  <script src="/js/summary.js?v=1"></script>
+</body>
+</html>

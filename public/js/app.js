@@ -76,7 +76,7 @@
   };
 
   const HISTORY_KEY = 'cassavaLeafDoctor.history.v1';
-  const MAX_HISTORY = 15;
+  const MAX_HISTORY = 50;
   const MAX_IMAGE_EDGE = 1280;
 
   // ---------------------------------------------------------------- State
@@ -738,7 +738,9 @@
     const thumb = r.photos && r.photos.mature ? await makeThumb(r.photos.mature) : '';
     // Keep stored entries small: drop full-size photos, keep one thumbnail
     const entry = Object.assign({}, r, { photos: thumb ? { mature: thumb } : {} });
-    writeHistory([entry, ...readHistory()].slice(0, MAX_HISTORY));
+    const cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000; // keep 30 days, like the sugarcane app
+    const recent = readHistory().filter((h) => !(new Date(h.analyzedAt).getTime() < cutoff));
+    writeHistory([entry, ...recent].slice(0, MAX_HISTORY));
   }
 
   function updateHistoryEntry(r) {
@@ -816,7 +818,7 @@
 
     document.querySelectorAll('[data-go]').forEach((b) => b.addEventListener('click', () => {
       const go = b.dataset.go;
-      if (go === 'history') show('screenHistory');
+      if (go === 'history') window.location.href = '/summary.html'; // full history page (like the sugarcane app)
       // "หน้าแรก" = SmartGreen home site (crop picker), same as the "เลือกพืชอื่น" link
       else if (go === 'home') window.location.href = 'https://smartgreen-vision-ai-home.vercel.app';
       else show(validateStep1() ? 'screen1' : 'screen2');
@@ -832,6 +834,22 @@
     $('#newBtnTop').addEventListener('click', resetAll);
 
     show('screen1');
+    openFromHistoryLink();
+  }
+
+  // /?open=<analyzedAt> (from the history page): show that saved result straight away
+  function openFromHistoryLink() {
+    const at = new URLSearchParams(window.location.search).get('open');
+    if (!at) return;
+    history.replaceState(null, '', '/');
+    const found = readHistory().find((h) => h.analyzedAt === at);
+    if (!found) return;
+    const splash = document.getElementById('appSplash');
+    if (splash) splash.remove();
+    lastResult = found;
+    renderResult(lastResult);
+    setSaveStatus(lastResult.savedToSheet ? '✅ บันทึกผลนี้ลง Google Sheets แล้ว' : '');
+    show('screenResults');
   }
 
   // ---------------------------------------------------------------- Launch splash

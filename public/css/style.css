@@ -25,7 +25,7 @@ body {
   line-height: 1.6;
 }
 
-.app { max-width: 640px; margin: 0 auto; padding: calc(env(safe-area-inset-top) + 14px) 16px 120px; }
+.app { max-width: 820px; margin: 0 auto; padding: calc(env(safe-area-inset-top) + 14px) 16px 120px; }
 
 /* ---------------- Header ---------------- */
 .app-header {
@@ -428,3 +428,6 @@ button { -webkit-tap-highlight-color: transparent; }
   .splash-bg, .splash-brand, .splash-ring, .splash-flare { animation: none; }
 }
 @media print { .app-splash { display: none !important; } }
+
+/* wider layout (820px, same as the sugarcane app): keep photo cards from getting too tall */
+@media (min-width: 700px) { .leaf-photo { aspect-ratio: 16 / 9; } }

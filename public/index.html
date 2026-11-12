@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="icon" href="/favicon.svg" />
-  <link rel="stylesheet" href="/css/style.css?v=9" />
+  <link rel="stylesheet" href="/css/style.css?v=10" />
 </head>
 <body>
   <!-- Launch splash (same idea as the sugarcane app). Tap anywhere to skip. -->
@@ -76,26 +76,33 @@
           <h1 class="screen-title">📋 ข้อมูลแปลงมันสำปะหลังสำหรับวิเคราะห์</h1>
           <p class="screen-desc">กรอกข้อมูลประจำแปลงเพื่อช่วยให้ AI ประเมินอายุ สภาพแปลง และความต้องการธาตุอาหารได้แม่นยำ</p>
 
+          <div class="two-col">
           <label class="field">ชื่อเกษตรกร / แปลงมัน <span class="req">*</span>
             <input name="customerName" type="text" placeholder="เช่น คุณสมชาย แปลงที่ 1" required />
           </label>
           <label class="field">👨‍🌾 ชื่อผู้ตรวจ / ผู้ดูแล
             <input name="inspectorName" type="text" placeholder="เช่น คุณสมศักดิ์ หรือ ทีมนักวิชาการ" />
           </label>
+          </div>
 
+          <div class="two-col">
+          <div>
           <label class="field">📅 อายุมันสำปะหลัง (เดือน) <span class="req">*</span>
             <select name="plantAge" required>
               <option value="">-- เลือกอายุ (เดือน) --</option>
             </select>
           </label>
           <div class="quick" data-quick="plantAge"><span>ด่วน:</span></div>
-
+          </div>
+          <div>
           <label class="field">🍠 พันธุ์มันสำปะหลัง
             <select name="variety">
               <option value="">-- เลือกพันธุ์ --</option>
             </select>
           </label>
           <div class="quick" data-quick="variety"><span>ด่วน:</span></div>
+          </div>
+          </div>
 
           <label class="field">จังหวัด / พื้นที่ตั้งแปลง
             <input name="province" type="text" placeholder="เช่น นครราชสีมา, กำแพงเพชร, ชลบุรี" />

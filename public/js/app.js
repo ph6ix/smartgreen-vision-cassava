@@ -515,9 +515,6 @@
   function renderResult(r) {
     const score = Number(r.healthScore) || 0;
     const lvl = healthLevel(score);
-    const meta = [
-      r.customerName, r.plantAge && `อายุ ${r.plantAge} เดือน`, r.plantingSeason, r.variety, r.province,
-    ].filter(Boolean).map(esc).join(' · ');
     const gauge = HEALTH_LEVELS.map((l, i) => `<div class="g${i + 1}${i === lvl ? ' on' : ''}"><b>${i + 1}</b>${esc(l.label)}</div>`).join('');
     const photos = SLOTS.filter((s) => r.photos && r.photos[s.key]).map((s) => `<img src="${r.photos[s.key]}" alt="${esc(s.label)}" />`).join('');
 
@@ -565,11 +562,11 @@
 
     $('#resultContent').innerHTML = `
       <section class="primary-card">
-        <div class="pc-label">🎯 ปัญหาหลักที่ตรวจพบ (PRIMARY ISSUE)</div>
-        <span class="pc-pill">ผลตรวจ AI · ความมั่นใจ${esc(r.confidence || '-')}${r.isDemo ? ' · [DEMO]' : ''}</span>
+        <div class="pc-top">
+          <div class="pc-label">🎯 ปัญหาหลักที่ตรวจพบ (PRIMARY ISSUE)</div>
+          <span class="pc-pill">ผลตรวจสมบูรณ์ (AI Confirmed)${r.isDemo ? ' · DEMO' : ''}</span>
+        </div>
         <div class="pc-issue">${esc(r.primaryIssue)}</div>
-        <div class="pc-meta">${meta}</div>
-        <div class="pc-meta">ตรวจเมื่อ ${esc(formatDate(r.analyzedAt))}${r.inspectorName ? ` · ผู้ตรวจ ${esc(r.inspectorName)}` : ''}</div>
         <div class="pc-score-label">🍠 สุขภาพต้น: <b>${esc(HEALTH_LEVELS[lvl].label)}</b></div>
         <div class="gauge" role="img" aria-label="ระดับสุขภาพ ${lvl + 1} จาก 5">${gauge}</div>
         ${photos ? `<div class="pc-photos">${photos}</div>` : ''}

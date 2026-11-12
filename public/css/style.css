@@ -501,3 +501,7 @@ button { -webkit-tap-highlight-color: transparent; }
   .extra-head { font-size: 14px; }
   input, select, textarea { font-size: 16px; }
 }
+
+/* Primary issue card header: label left, "AI Confirmed" badge right (like the sugarcane app) */
+.pc-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.pc-top .pc-pill { margin: 0; padding: 4px 12px; font-size: 12px; font-weight: 700; }

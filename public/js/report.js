@@ -239,7 +239,7 @@
     const lines = [
       '🍠 ผลตรวจใบมันสำปะหลัง (สมาร์ทกรีน Vision Ai)',
       r.customerName ? `แปลง: ${r.customerName}` : '',
-      r.plantAge ? `อายุ: ${r.plantAge} ปี` : '',
+      r.plantAge ? `อายุ: ${r.plantAge} เดือน` : '',
       `สุขภาพต้น: ${HEALTH_LEVELS[healthLevel(Number(r.healthScore) || 0)].label}`,
       `ปัญหาหลัก: ${r.primaryIssue}`,
       '',

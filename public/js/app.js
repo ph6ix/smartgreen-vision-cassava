@@ -818,7 +818,7 @@
 
     document.querySelectorAll('[data-go]').forEach((b) => b.addEventListener('click', () => {
       const go = b.dataset.go;
-      if (go === 'history') window.location.href = '/summary.html'; // full history page (like the sugarcane app)
+      if (go === 'history') window.location.href = '/summary'; // full history page (like the sugarcane app)
       // "หน้าแรก" = SmartGreen home site (crop picker), same as the "เลือกพืชอื่น" link
       else if (go === 'home') window.location.href = 'https://smartgreen-vision-ai-home.vercel.app';
       else show(validateStep1() ? 'screen1' : 'screen2');

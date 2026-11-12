@@ -201,6 +201,8 @@ function doPost(e) {
     const def = crop ? CROPS[crop] : { sheet: 'อื่นๆ', headers: Object.keys(data).map(function (k) { return [k, k]; }) };
     const sheet = getOrCreateSheet_(def);
     // Results from the "load sample" demo button are tagged so they are easy to filter out
+    // The sugarcane app sends no isDemo flag: its sample customer is "คุณสมคิด ไร่อ้อยทอง แปลงที่ 1"
+    if (crop === 'sugarcane' && String(data.customerName || '').indexOf('คุณสมคิด ไร่อ้อยทอง') !== -1) data.isDemo = 'true';
     if (String(data.isDemo) === 'true' && String(data.customerName || '').indexOf('[DEMO]') !== 0) {
       data.customerName = '[DEMO] ' + (data.customerName || '');
     }

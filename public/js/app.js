@@ -529,7 +529,7 @@
     const photos = SLOTS.filter((s) => r.photos && r.photos[s.key]).map((s) => `<img src="${r.photos[s.key]}" alt="${esc(s.label)}" />`).join('');
 
     const needs = (r.nutrientStatus || []).filter((n) => n.status !== 'ปกติ' && n.status !== 'ต้องตรวจเพิ่ม');
-    const nutrients = (r.nutrientStatus || []).map((n) => {
+    const nutRow = (n) => {
       const st = STATUS_STYLE[n.status] || STATUS_STYLE['ต้องตรวจเพิ่ม'];
       return `<div class="nut">
           <span class="code" style="color:${st.color}">${esc(n.code)}</span>
@@ -537,7 +537,16 @@
           <span class="badge ${st.cls}">${esc(n.status)}</span>
           <span class="ev"><b>${esc(n.name)}</b> — ${esc(n.evidence)}</span>
         </div>`;
-    }).join('');
+    };
+    const NUT_ORDER = ['ขาดรุนแรง', 'ขาดปานกลาง', 'ขาดเล็กน้อย', 'เสี่ยงขาด', 'ต้องตรวจเพิ่ม'];
+    const nutAll = r.nutrientStatus || [];
+    const nutIssue = nutAll.filter((n) => n.status !== 'ปกติ').sort((a, b) => NUT_ORDER.indexOf(a.status) - NUT_ORDER.indexOf(b.status));
+    const nutOk = nutAll.filter((n) => n.status === 'ปกติ');
+    const nutrients = !nutAll.length ? '<p class="nut-allok">ไม่มีข้อมูลธาตุอาหาร</p>'
+      : (nutIssue.length
+        ? `<div class="nut-head">⚠️ ธาตุที่ต้องดูแล (${nutIssue.length})</div><div class="nutrients">${nutIssue.map(nutRow).join('')}</div>`
+        : `<p class="nut-allok">✅ ธาตุอาหารปกติครบทั้ง ${nutAll.length} ธาตุ</p>`)
+      + (nutOk.length ? `<details class="nut-ok"><summary><span>${nutIssue.length ? `✅ ปกติ ${nutOk.length} ธาตุ: ${nutOk.map((n) => esc(n.code)).join(', ')}` : `ดูรายละเอียดทั้ง ${nutOk.length} ธาตุ`}</span><em>กดดู ▾</em></summary><div class="nutrients">${nutOk.map(nutRow).join('')}</div></details>` : '');
 
     const diseases = (r.diseases || []).length
       ? r.diseases.map((d) => `
@@ -583,7 +592,7 @@
       </section>
       ${urgent}
       ${needs.length ? `<section class="sec"><h2>💊 ธาตุอาหารที่ควรเสริม</h2><div class="need-pills">${needs.map((n) => `<span>💊 เสริม: ${esc(n.name)}</span>`).join('')}</div></section>` : ''}
-      <section class="sec"><h2>🧪 สถานะธาตุอาหาร 8 ธาตุ</h2><div class="nutrients">${nutrients}</div></section>
+      <section class="sec"><h2>🧪 สถานะธาตุอาหาร ${nutAll.length || 8} ธาตุ</h2>${nutrients}</section>
       <section class="sec"><h2>🦠 โรค แมลง และความเครียด</h2>${diseases}</section>
       <section class="sec"><h2>🚜 แผนการใส่ปุ๋ยแนะนำ</h2>${plan}</section>
       ${products}

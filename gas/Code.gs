@@ -1,5 +1,5 @@
 /**
- * สมาร์ทกรีน Vision Ai — Google Sheets webhook (ใช้ร่วมกันทุกพืช: ข้าว ข้าวโพด มันสำปะหลัง ยางพารา ปาล์ม)
+ * สมาร์ทกรีน Vision Ai — Google Sheets webhook (ใช้ร่วมกันทุกพืช: อ้อย ข้าว ข้าวโพด มันสำปะหลัง ยางพารา ปาล์ม)
  *
  * Google Sheets 1 ไฟล์ · Apps Script 1 ตัว · URL เดียวใส่ได้ทุกแอป
  * ผลตรวจแต่ละพืชจะแยกไปอยู่คนละแท็บ (ชีต) ให้อัตโนมัติ
@@ -10,10 +10,33 @@
  * 3. ทำให้ใช้งานได้ (Deploy) → การทำให้ใช้งานได้รายการใหม่ → ประเภท: เว็บแอป
  *    - ดำเนินการในฐานะ: ฉัน
  *    - ผู้ที่มีสิทธิ์เข้าถึง: ทุกคน
- * 4. คัดลอก URL เว็บแอป (.../exec) ไปใส่ใน Vercel ของทั้ง 5 แอป
+ * 4. คัดลอก URL เว็บแอป (.../exec) ไปใส่ใน Vercel ของทุกแอป (อ้อยใส่ได้ด้วย)
  *    → Settings → Environment Variables → GOOGLE_SHEETS_WEBHOOK_URL → แล้ว Redeploy
  */
 const CROPS = {
+  sugarcane: {
+    sheet: 'ผลตรวจใบอ้อย',
+    headers: [
+      ['timestamp', 'วันเวลาที่ตรวจ'],
+      ['customerName', 'ชื่อลูกค้า / แปลงอ้อย'],
+      ['inspectorName', 'ชื่อผู้ตรวจ / ผู้ดูแล'],
+      ['caneType', 'ประเภทอ้อย'],
+      ['caneAge', 'อายุอ้อย (เดือน)'],
+      ['variety', 'พันธุ์อ้อย'],
+      ['province', 'จังหวัด'],
+      ['coordinates', 'พิกัดแปลง (GPS)'],
+      ['soilType', 'ชนิดดิน'],
+      ['waterStatus', 'สภาพน้ำ/ความชื้น'],
+      ['soilPh', 'ค่า pH ดิน'],
+      ['primaryIssue', 'อาการหลักที่พบ'],
+      ['greennessLabel', 'ระดับความเขียว LCC'],
+      ['overallSummary', 'สรุปผลการวิเคราะห์'],
+      ['fertilizerFormula', 'สูตรปุ๋ยแนะนำ'],
+      ['smartGreenSoilProduct', 'ปุ๋ยทางดิน SmartGreen'],
+      ['smartGreenLiquidProduct', 'นวัตกรรมชนิดน้ำ SmartGreen'],
+      ['recommendedNextStep', 'คำแนะนำการจัดการแปลง'],
+    ],
+  },
   rice: {
     sheet: 'ผลตรวจใบข้าว',
     headers: [
@@ -172,6 +195,8 @@ const CROPS = {
 function doPost(e) {
   try {
     const data = e && e.postData && e.postData.contents ? JSON.parse(e.postData.contents) : {};
+    // The sugarcane app sends no crop field; recognise it by its own fields
+    if (!data.crop && (data.caneType !== undefined || data.caneAge !== undefined)) data.crop = 'sugarcane';
     const crop = CROPS[data.crop] ? data.crop : null;
     const def = crop ? CROPS[crop] : { sheet: 'อื่นๆ', headers: Object.keys(data).map(function (k) { return [k, k]; }) };
     const sheet = getOrCreateSheet_(def);

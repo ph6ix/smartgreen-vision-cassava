@@ -453,7 +453,16 @@
       pct = Math.min(92, pct + Math.max(1, (92 - pct) * 0.08));
       $('#azPct').textContent = `${Math.round(pct)}%`;
       $('#azBar').style.width = `${pct}%`;
-      $('#azStep').textContent = steps[Math.min(steps.length - 1, Math.floor(pct / 20))];
+      const cur = Math.min(steps.length - 1, Math.floor(pct / 20));
+      $('#azStep').textContent = steps[cur];
+      renderChecklist(cur);
+    };
+    // Checklist under the bar (like the sugarcane app): done ✓ / working ⚙ / waiting ○
+    const renderChecklist = (cur) => {
+      $('#azChecklist').innerHTML = steps.map((t, i) => {
+        const st = i < cur ? 'done' : i === cur ? 'active' : 'wait';
+        return `<li class="${st}"><span class="az-ck" aria-hidden="true"></span>${esc(t.replace(/^กำลัง/, '').replace(/\.\.\.$/, ''))}</li>`;
+      }).join('');
     };
     tick();
     const id = setInterval(tick, 1000);
@@ -461,6 +470,7 @@
       clearInterval(id);
       $('#azPct').textContent = '100%';
       $('#azBar').style.width = '100%';
+      renderChecklist(steps.length);
     };
   }
 

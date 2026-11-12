@@ -505,3 +505,15 @@ button { -webkit-tap-highlight-color: transparent; }
 /* Primary issue card header: label left, "AI Confirmed" badge right (like the sugarcane app) */
 .pc-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
 .pc-top .pc-pill { margin: 0; padding: 4px 12px; font-size: 12px; font-weight: 700; }
+
+/* Analyzing: step checklist under the progress bar (like the sugarcane app) */
+.az-checklist { list-style: none; margin: 14px 0 0; padding: 14px 18px; border: 1px solid var(--s200); border-radius: 18px; background: #fbfdfc; display: grid; gap: 10px; }
+.az-checklist li { display: flex; align-items: center; gap: 12px; font-size: 13.5px; color: var(--s400); }
+.az-checklist li.done { color: var(--s700); }
+.az-checklist li.active { color: var(--s900); font-weight: 700; }
+.az-ck { width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; border: 2px solid var(--s200); display: grid; place-items: center; font-size: 12px; }
+.az-checklist li.done .az-ck { background: var(--g500); border-color: var(--g500); color: #fff; }
+.az-checklist li.done .az-ck::after { content: '✓'; font-weight: 800; }
+.az-checklist li.active .az-ck { border: none; font-size: 18px; animation: spin 2s linear infinite; }
+.az-checklist li.active .az-ck::after { content: '⚙️'; }
+@media (prefers-reduced-motion: reduce) { .az-checklist li.active .az-ck { animation: none; } }

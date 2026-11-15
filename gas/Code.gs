@@ -12,6 +12,12 @@
  *    - ผู้ที่มีสิทธิ์เข้าถึง: ทุกคน
  * 4. คัดลอก URL เว็บแอป (.../exec) ไปใส่ใน Vercel ของทุกแอป (อ้อยใส่ได้ด้วย)
  *    → Settings → Environment Variables → GOOGLE_SHEETS_WEBHOOK_URL → แล้ว Redeploy
+ *
+ * สำรองข้อมูลแยกรายเดือน (ทำครั้งเดียว):
+ * - เลือกฟังก์ชัน installMonthlyBackup แล้วกด Run → กดอนุญาตสิทธิ์
+ * - ระบบจะสร้างโฟลเดอร์ "สำรองผลตรวจ สมาร์ทกรีน Vision AI" ใน Google Drive
+ *   แล้วทุกวันที่ 1 จะสร้างไฟล์ของเดือนที่ผ่านมาให้เอง เดือนละ 1 ไฟล์
+ * - อยากสำรองเดือนนี้ทันที: Run backupThisMonth · อยากสำรองย้อนหลังทุกเดือน: Run backupAllMonths
  */
 const CROPS = {
   sugarcane: {
@@ -243,4 +249,93 @@ function getOrCreateSheet_(def) {
 
 function json_(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}
+
+// ---------------------------------------------------------------- สำรองข้อมูลแยกรายเดือน
+const BACKUP_FOLDER = 'สำรองผลตรวจ สมาร์ทกรีน Vision AI';
+const TH_MONTHS = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+
+/** กด Run ครั้งเดียว: ตั้งเวลาให้สำรองเองทุกวันที่ 1 และสำรองทุกเดือนที่มีข้อมูลอยู่ตอนนี้ */
+function installMonthlyBackup() {
+  ScriptApp.getProjectTriggers().forEach(function (t) {
+    if (t.getHandlerFunction() === 'backupLastMonth') ScriptApp.deleteTrigger(t);
+  });
+  ScriptApp.newTrigger('backupLastMonth').timeBased().onMonthDay(1).atHour(2).create();
+  backupAllMonths();
+}
+
+/** ระบบเรียกเองทุกวันที่ 1: สำรองเดือนที่เพิ่งจบ */
+function backupLastMonth() {
+  const now = new Date();
+  backupMonth_(monthKey_(new Date(now.getFullYear(), now.getMonth(), 0, 12)));
+}
+
+/** สำรองเดือนปัจจุบันทันที (กดซ้ำได้ ไฟล์เดิมจะถูกอัปเดต) */
+function backupThisMonth() {
+  backupMonth_(monthKey_(new Date()));
+}
+
+/** สำรองย้อนหลังทุกเดือนที่มีข้อมูล */
+function backupAllMonths() {
+  const keys = {};
+  SpreadsheetApp.getActiveSpreadsheet().getSheets().forEach(function (sh) {
+    sh.getDataRange().getValues().slice(1).forEach(function (r) {
+      if (r[0] instanceof Date) keys[monthKey_(r[0])] = true;
+    });
+  });
+  Object.keys(keys).sort().forEach(backupMonth_);
+}
+
+/** key = 'yyyy-MM' ตามเขตเวลาของไฟล์ Sheets */
+function monthKey_(date) {
+  return Utilities.formatDate(date, SpreadsheetApp.getActiveSpreadsheet().getSpreadsheetTimeZone(), 'yyyy-MM');
+}
+
+function backupMonth_(key) {
+  const src = SpreadsheetApp.getActiveSpreadsheet();
+  const year = Number(key.slice(0, 4));
+  const month = Number(key.slice(5, 7));
+  const name = 'ผลตรวจ ' + key + ' (' + TH_MONTHS[month - 1] + ' ' + (year + 543) + ')';
+
+  // One file per month in the backup folder; running again updates the same file
+  const folders = DriveApp.getFoldersByName(BACKUP_FOLDER);
+  const folder = folders.hasNext() ? folders.next() : DriveApp.createFolder(BACKUP_FOLDER);
+  const found = folder.getFilesByName(name);
+  let out;
+  if (found.hasNext()) {
+    out = SpreadsheetApp.openById(found.next().getId());
+  } else {
+    out = SpreadsheetApp.create(name);
+    DriveApp.getFileById(out.getId()).moveTo(folder);
+  }
+  const old = out.getSheets();
+  const summary = out.insertSheet('สรุป ' + key + ' ' + Date.now());
+  old.forEach(function (sh) { out.deleteSheet(sh); });
+
+  const counts = [];
+  src.getSheets().forEach(function (sh) {
+    const values = sh.getDataRange().getValues();
+    if (values.length < 2) return;
+    const rows = values.slice(1).filter(function (r) { return r[0] instanceof Date && monthKey_(r[0]) === key; });
+    if (!rows.length) return;
+    const copy = out.insertSheet(sh.getName());
+    copy.getRange(1, 1, 1, values[0].length).setValues([values[0]])
+      .setBackground('#047857').setFontColor('#ffffff').setFontWeight('bold');
+    copy.getRange(2, 1, rows.length, values[0].length).setValues(rows);
+    copy.setFrozenRows(1);
+    counts.push([sh.getName(), rows.length]);
+  });
+
+  const total = counts.reduce(function (n, c) { return n + c[1]; }, 0);
+  const lines = [['สำรองผลตรวจ ' + TH_MONTHS[month - 1] + ' ' + (year + 543), ''], ['สำรองเมื่อ', new Date()], ['', ''], ['พืช', 'จำนวนแปลงที่ตรวจ']]
+    .concat(counts.length ? counts : [['ไม่มีผลตรวจในเดือนนี้', 0]])
+    .concat([['รวม', total]]);
+  summary.getRange(1, 1, lines.length, 2).setValues(lines);
+  summary.getRange(1, 1).setFontWeight('bold').setFontSize(13);
+  summary.getRange(4, 1, 1, 2).setBackground('#047857').setFontColor('#ffffff').setFontWeight('bold');
+  summary.getRange(lines.length, 1, 1, 2).setFontWeight('bold');
+  summary.setName('สรุป');
+  out.setActiveSheet(summary);
+  out.moveActiveSheet(1);
+  return total;
 }

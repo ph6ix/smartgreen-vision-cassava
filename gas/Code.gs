@@ -41,6 +41,7 @@ const CROPS = {
       ['smartGreenSoilProduct', 'ปุ๋ยทางดิน SmartGreen'],
       ['smartGreenLiquidProduct', 'นวัตกรรมชนิดน้ำ SmartGreen'],
       ['recommendedNextStep', 'คำแนะนำการจัดการแปลง'],
+      ['traceId', 'รหัสอ้างอิง'],
     ],
   },
   rice: {
@@ -199,13 +200,20 @@ const CROPS = {
 };
 
 function doPost(e) {
+  // One request at a time, so two copies of the same result arriving together cannot both be written
+  const lock = LockService.getScriptLock();
   try {
+    lock.waitLock(20000);
     const data = e && e.postData && e.postData.contents ? JSON.parse(e.postData.contents) : {};
     // The sugarcane app sends no crop field; recognise it by its own fields
     if (!data.crop && (data.caneType !== undefined || data.caneAge !== undefined)) data.crop = 'sugarcane';
     const crop = CROPS[data.crop] ? data.crop : null;
     const def = crop ? CROPS[crop] : { sheet: 'อื่นๆ', headers: Object.keys(data).map(function (k) { return [k, k]; }) };
     const sheet = getOrCreateSheet_(def);
+    // Same result sent again (retry after a network drop, double tap): keep the row that is already there
+    if (data.traceId && hasTraceId_(sheet, def, String(data.traceId))) {
+      return json_({ success: true, sheet: def.sheet, duplicate: true });
+    }
     // Results from the "load sample" demo button are tagged so they are easy to filter out
     // The sugarcane app sends no isDemo flag: its sample customer is "คุณสมคิด ไร่อ้อยทอง แปลงที่ 1"
     if (crop === 'sugarcane' && String(data.customerName || '').indexOf('คุณสมคิด ไร่อ้อยทอง') !== -1) data.isDemo = 'true';
@@ -221,7 +229,24 @@ function doPost(e) {
     return json_({ success: true, sheet: def.sheet });
   } catch (err) {
     return json_({ success: false, error: err.message });
+  } finally {
+    try { lock.releaseLock(); } catch (e2) {}
   }
+}
+
+/** true when the "รหัสอ้างอิง" column already holds this traceId (checks the latest 2,000 rows) */
+function hasTraceId_(sheet, def, traceId) {
+  const h = def.headers.filter(function (x) { return x[0] === 'traceId'; })[0];
+  if (!h) return false;
+  const lastCol = sheet.getLastColumn();
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2 || lastCol < 1) return false;
+  const col = sheet.getRange(1, 1, 1, lastCol).getValues()[0].indexOf(h[1]) + 1;
+  if (col < 1) return false;
+  const from = Math.max(2, lastRow - 1999);
+  const ids = sheet.getRange(from, col, lastRow - from + 1, 1).getValues();
+  for (let i = 0; i < ids.length; i++) if (String(ids[i][0]) === traceId) return true;
+  return false;
 }
 
 /** เปิด URL เว็บแอปในเบราว์เซอร์เพื่อเช็กว่าสคริปต์ทำงาน */
@@ -243,6 +268,18 @@ function getOrCreateSheet_(def) {
     sheet.getRange(1, 1, 1, def.headers.length)
       .setBackground('#047857').setFontColor('#ffffff').setFontWeight('bold');
     sheet.setFrozenRows(1);
+    return sheet;
+  }
+  // A tab made by an older version of this script: add the new columns at the end (e.g. รหัสอ้างอิง for sugarcane)
+  const have = sheet.getLastColumn();
+  if (have > 0 && have < def.headers.length) {
+    const labels = sheet.getRange(1, 1, 1, have).getValues()[0];
+    const samePrefix = labels.every(function (l, i) { return String(l) === def.headers[i][1]; });
+    if (samePrefix) {
+      const extra = def.headers.slice(have).map(function (h) { return h[1]; });
+      sheet.getRange(1, have + 1, 1, extra.length).setValues([extra])
+        .setBackground('#047857').setFontColor('#ffffff').setFontWeight('bold');
+    }
   }
   return sheet;
 }

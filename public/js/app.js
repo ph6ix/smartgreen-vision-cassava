@@ -329,7 +329,7 @@
         ? '<span class="leaf-chip guide">📍 ตัวอย่างตำแหน่งจริง</span>'
         : showGuide
           ? '<span class="leaf-chip guide">📍 ตัวอย่างตำแหน่งจริง (แตะเพื่อสลับ)</span>'
-          : `<span class="leaf-chip ok">${isDemoPhotos ? '✅ ภาพตัวอย่างจริง พร้อมตรวจ' : '✅ อัปโหลดแล้ว พร้อมตรวจ'}</span>`;
+          : `<span class="leaf-chip ok">${data.demo ? '✅ ภาพตัวอย่างจริง พร้อมตรวจ' : '✅ อัปโหลดแล้ว พร้อมตรวจ'}</span>`;
       card.innerHTML = `
         <div class="leaf-head">
           <span class="leaf-icon" style="background:${slot.bg}" aria-hidden="true">${slot.icon}</span>
@@ -407,7 +407,7 @@
         }
       }));
       for (const k of Object.keys(images)) delete images[k];
-      for (const [k, v] of entries) if (v) images[k] = v;
+      for (const [k, v] of entries) if (v) images[k] = Object.assign(v, { demo: true }); // sample photo, not from the field
       isDemoPhotos = true;
       if (validateStep1()) fillDemoInfo();
       renderLeafCards();
@@ -435,7 +435,8 @@
     const payload = {};
     for (const [k, v] of fd.entries()) if (typeof v === 'string') payload[k] = v.trim();
     payload.observedSymptoms = Array.from(selectedSymptoms);
-    payload.isDemo = isDemoPhotos;
+    // DEMO when any photo in this analysis is a sample photo (also after replacing only some of them)
+    payload.isDemo = SLOTS.some((s) => images[s.key] && images[s.key].demo);
     payload.images = {};
     for (const slot of SLOTS) {
       if (images[slot.key]) payload.images[slot.key] = { base64: images[slot.key].base64, mimeType: images[slot.key].mimeType };

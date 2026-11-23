@@ -557,3 +557,8 @@ button { -webkit-tap-highlight-color: transparent; }
 
 /* File input stays in the page (not display:none) so phones open the picker reliably */
 .leaf-file { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; opacity: 0; }
+
+/* Error banner under the stepper, same look as the sugarcane app */
+.status-error-top { margin: 16px 0; padding: 14px 18px; border-radius: 16px; font-size: 13.5px; font-weight: 700; line-height: 1.6;
+  background: #fef2f2; border: 1.5px solid #fee2e2; color: #b91c1c; white-space: pre-wrap; }
+@media print { .status-error-top { display: none !important; } }

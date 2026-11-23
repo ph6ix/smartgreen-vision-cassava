@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="icon" href="/favicon.svg" />
-  <link rel="stylesheet" href="/css/style.css?v=19" />
+  <link rel="stylesheet" href="/css/style.css?v=20" />
   <link rel="stylesheet" href="/css/fx.css?v=1" />
 </head>
 <body>
@@ -68,6 +68,10 @@
       <span class="step-line"></span>
       <span class="step" data-step="3"><b>3</b><span>ผลวิเคราะห์</span></span>
     </nav>
+
+    <!-- Error banner under the stepper (same place as the sugarcane app) -->
+    <p class="form-error status-error-top" id="error1" role="alert" hidden></p>
+    <p class="form-error status-error-top" id="error2" role="alert" hidden></p>
 
     <main>
       <form id="cassavaForm" novalidate>
@@ -141,7 +145,6 @@
             </label>
           </div>
 
-          <p class="form-error" id="error1" role="alert" hidden></p>
           <div class="demo-row">
             <button type="button" class="btn-demo" id="fillDemoBtn">💡 ใส่ข้อมูลตัวอย่างทดสอบ</button>
           </div>
@@ -170,7 +173,6 @@
             <button type="button" class="btn-demo" id="demoBtn">💡 โหลดรูปตัวอย่างทดสอบ</button>
           </div>
 
-          <p class="form-error" id="error2" role="alert" hidden></p>
           <div class="btn-row">
             <button type="button" class="btn-ghost" id="backTo1">← แก้ข้อมูลแปลง</button>
             <button type="submit" class="btn-primary" id="submitBtn">🔍 เริ่มวิเคราะห์ด้วย AI</button>
@@ -254,7 +256,7 @@
     <img id="lightboxImg" src="" alt="" />
   </div>
 
-  <script src="/js/app.js?v=18"></script>
+  <script src="/js/app.js?v=19"></script>
   <script src="/js/fx.js?v=1"></script>
 </body>
 </html>

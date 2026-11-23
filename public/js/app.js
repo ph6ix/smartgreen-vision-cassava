@@ -339,7 +339,7 @@
             <div class="leaf-nutr">ธาตุ/อาการ: ${esc(slot.nutr)}</div>
           </div>
         </div>
-        <div class="leaf-photo${showGuide ? ' guide' : ''}" role="button" tabindex="0" aria-label="${data ? `สลับดูภาพตัวอย่าง ${esc(slot.label)}` : `ถ่ายหรือเลือกภาพ ${esc(slot.label)}`}">
+        <${data ? 'div' : 'label'} class="leaf-photo${showGuide ? ' guide' : ''}"${data ? ` role="button" tabindex="0" aria-label="สลับดูภาพตัวอย่าง ${esc(slot.label)}"` : ` for="leafFile-${slot.key}"`}>
           <img src="${showGuide ? `/assets/samples/${slot.key}.jpg` : data.dataUrl}" alt="${esc(slot.label)}"${showGuide ? ` onerror="this.onerror=null;this.src='/assets/guide/slot_${slot.key}.svg';this.parentNode.classList.add('svg')"` : ''} />
           ${chip}
           ${showGuide ? `
@@ -351,8 +351,8 @@
               ${data ? '' : '<span class="leaf-cta">📸 แตะถ่ายรูป / เลือกภาพ</span>'}
             </span>
           </span>` : ''}
-        </div>
-        <input type="file" accept="image/*" capture="environment" hidden aria-label="ถ่ายหรือเลือกภาพ ${esc(slot.label)}" />
+        </${data ? 'div' : 'label'}>
+        <input type="file" accept="image/*" class="leaf-file" id="leafFile-${slot.key}" aria-label="ถ่ายหรือเลือกภาพ ${esc(slot.label)}" />
         ${data ? '<div class="leaf-tools"><button type="button" class="retake">🔄 ถ่ายใหม่</button><button type="button" class="swap">👁️ สลับดูตัวอย่าง</button><button type="button" class="del">🗑️ ลบ</button></div>' : ''}`;
       const input = card.querySelector('input');
       input.addEventListener('change', async (e) => {
@@ -369,14 +369,14 @@
         }
         renderLeafCards();
       });
-      // Empty slot: tap opens the camera. Filled slot: tap swaps between the photo and the sample (like sugarcane)
+      // Empty slot: the <label> opens the camera / photo library natively.
+      // Filled slot: tap swaps between the photo and the sample (like sugarcane)
       const toggle = () => { guideView[slot.key] = !guideView[slot.key]; renderLeafCards(); };
-      const photo = card.querySelector('.leaf-photo');
-      const onTap = () => (data ? toggle() : input.click());
-      photo.addEventListener('click', onTap);
-      photo.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onTap(); } });
       if (data) {
-        card.querySelector('.retake').addEventListener('click', () => input.click());
+        const photo = card.querySelector('.leaf-photo');
+        photo.addEventListener('click', toggle);
+        photo.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+        card.querySelector('.retake').addEventListener('click', () => { input.value = ''; input.click(); });
         card.querySelector('.swap').addEventListener('click', toggle);
         card.querySelector('.del').addEventListener('click', () => { delete images[slot.key]; delete guideView[slot.key]; renderLeafCards(); });
       }

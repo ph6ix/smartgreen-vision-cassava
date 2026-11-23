@@ -28,6 +28,19 @@
     return d.toLocaleString('th-TH', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
   }
 
+  // Rice / corn show the leaf greenness level (Leaf Color Chart) instead of the health level
+  const GREEN_LEVELS = ['ซีด/เหลือง', 'เขียวอ่อน', 'เขียวปกติ', 'เขียวสมบูรณ์', 'เขียวเข้มจัด'];
+  function statusLabel(h) {
+    if (!CFG.greenness) return HEALTH_LEVELS[healthIdx(h)].label;
+    const g = Number(h.greennessLevel);
+    return g >= 1 && g <= 5 ? `ระดับ ${g}: ${GREEN_LEVELS[g - 1]}` : '';
+  }
+  function statusPill(h) {
+    const label = statusLabel(h);
+    if (!label) return '';
+    return `<span class="pill ${CFG.greenness ? 'lcc' + Number(h.greennessLevel) : 'h' + healthIdx(h)}">${CFG.greenness ? '🌿 ' : ''}${esc(label)}</span>`;
+  }
+
   function healthIdx(h) {
     const score = Number(h.healthScore) || 0;
     let idx = 0;
@@ -124,7 +137,7 @@
     const kw = ($('#searchInput').value || '').trim().toLowerCase();
     const list = rows.map((h, i) => ({ h, i })).filter(({ h }) => !kw || [
       h.customerName, h.inspectorName, h[CFG.ageField], h.variety, h.province, h.primaryIssue, h.overallSummary,
-      HEALTH_LEVELS[healthIdx(h)].label,
+      statusLabel(h),
     ].join(' ').toLowerCase().includes(kw));
 
     $('#summaryMeta').textContent = kw ? `พบ ${list.length} จาก ${rows.length} รายการ` : `แสดงทั้งหมด ${list.length} รายการ`;
@@ -132,7 +145,6 @@
     document.querySelector('.sum-table-wrap').hidden = rows.length === 0;
 
     $('#tableBody').innerHTML = list.length ? list.map(({ h, i }) => {
-      const lvl = healthIdx(h);
       const img = thumb(h);
       return `
       <tr>
@@ -146,7 +158,7 @@
         <td class="nowrap">${esc(ageText(h))}</td>
         <td>${esc(h.variety || '-')}</td>
         <td>${esc(h.province || '-')}</td>
-        <td><span class="pill h${lvl}">${esc(HEALTH_LEVELS[lvl].label)}</span></td>
+        <td>${statusPill(h) || '-'}</td>
         <td class="diag">${h.primaryIssue ? `🎯 <strong>${esc(h.primaryIssue)}</strong><br>` : ''}${esc(h.overallSummary || '')}</td>
         <td class="actions">
           <button type="button" class="sum-btn sm" data-report="${i}">🖨️ ใบสรุป</button>
@@ -156,7 +168,6 @@
     }).join('') : (rows.length ? '<tr><td colspan="8" class="c">ไม่พบรายการที่ค้นหา</td></tr>' : '');
 
     $('#cardsContainer').innerHTML = list.length ? list.map(({ h, i }) => {
-      const lvl = healthIdx(h);
       const img = thumb(h);
       return `
       <div class="sum-mcard">
@@ -165,7 +176,7 @@
             ${img ? `<img class="sum-thumb" src="${img}" alt="" />` : ''}
             <div>
               <strong>${esc(h.customerName || 'ไม่ระบุแปลง')}${h.isDemo ? ' <span class="demo">[DEMO]</span>' : ''}</strong>
-              <span class="pill h${lvl}">${esc(HEALTH_LEVELS[lvl].label)}</span>
+              ${statusPill(h)}
             </div>
           </div>
           <button type="button" class="sum-btn sm del" data-del="${i}" title="ลบรายการนี้">🗑️ ลบ</button>

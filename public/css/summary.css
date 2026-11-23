@@ -112,3 +112,8 @@ a.bn-item { text-decoration: none; }
   .sum-table th, .sum-table td { padding: 8px; font-size: 11px; }
   .sum-table tr { break-inside: avoid; }
 }
+
+/* Leaf greenness level (rice / corn) */
+.pill.lcc1 { background: #fefce8; color: #854d0e; border-color: #fde68a; }
+.pill.lcc2 { background: #f7fee7; color: #3f6212; border-color: #d9f99d; }
+.pill.lcc3, .pill.lcc4, .pill.lcc5 { background: var(--g50); color: var(--g700); border-color: var(--g200); }
